@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const Thing = require('./models/Thing'); // Importation du modèle Mongoose
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const stuffroute = require('./routes/stuff.js');
+const stuffroute = require('./routes/Thing.js');
 // Chargement des variables d'environnement depuis le fichier .env
 dotenv.config();
 
