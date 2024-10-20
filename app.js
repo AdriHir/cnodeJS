@@ -33,7 +33,9 @@ app.use((req, res, next) => {
 
 // Middleware pour parser les requêtes en JSON
 app.use(bodyParser.json());
-//importe le routeur
-app.use('api/stuff', stuffroute);
+
+//importe le routeur et utilise la route générale api/stuff
+app.use('/api/stuff', stuffroute);
+
 // Exporter l'application pour l'utiliser dans le fichier principal
 module.exports = app;
