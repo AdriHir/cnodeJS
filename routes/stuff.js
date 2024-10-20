@@ -14,7 +14,7 @@ router.post('/', (req, res, next) => {
 
 // Endpoint pour obtenir un objet par son ID
 router.get('/:id', (req, res, next) => {
-    Thing.findOne({_id: req.params.id}) // Chercher l'objet avec l'ID correspondant
+    Thing.findOne({_id: req.params.id}) // Chercher l'objet avec l'ID
         .then(thing => res.status(200).json(thing)) // Retourner l'objet trouvé
         .catch(error => res.status(404).json({error})); // Gérer les erreurs de recherche
 });
@@ -38,7 +38,7 @@ router.put(':id', (req, res, next) => {
 
 // Endpoint pour supprimer un objet par son ID
 router.delete(':id', (req, res, next) => {
-    Thing.deleteOne({_id: req.params.id}) // Supprimer l'objet avec l'ID correspondant
+    Thing.deleteOne({_id: req.params.id}) // Supprimer l'objet avec l'ID
         .then(() => res.status(200).json({message: 'Objet supprimé !'}))
         .catch(error => res.status(400).json({error})); // Gérer les erreurs de suppression
 });

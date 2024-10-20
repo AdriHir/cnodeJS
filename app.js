@@ -16,7 +16,8 @@ const uri = `mongodb+srv://${username}:${password}@cluster0.1qbit.mongodb.net/?r
 // Connexion à MongoDB avec Mongoose
 mongoose.connect(uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true })
+    useUnifiedTopology: true
+})
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(err => console.error('La onnexion à MongoDB échouée !', err));
 
@@ -33,6 +34,6 @@ app.use((req, res, next) => {
 // Middleware pour parser les requêtes en JSON
 app.use(bodyParser.json());
 //importe le routeur
-app.use('api/stuff',stuffroute);
+app.use('api/stuff', stuffroute);
 // Exporter l'application pour l'utiliser dans le fichier principal
 module.exports = app;
