@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const stuffroute = require('./routes/Thing.js');
+const thingRoute = require('./routes/Thing.js');
 const userRoute = require('./routes/User.js');
 // Chargement des variables d'environnement depuis le fichier .env
 dotenv.config();
@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 //importe le routeur et utilise la route générale api/stuff
-app.use('/api/stuff', stuffroute);
+app.use('/api/stuff', thingRoute);
 app.use('api/auth', userRoute);
 
 // Exporter l'application pour l'utiliser dans le fichier principal
