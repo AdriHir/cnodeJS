@@ -1,6 +1,8 @@
 const multer = require('multer');
-
+// multerest une excellente bibliothèque pour gérer les uploads de fichiers dans les applications Node.js avec Express.
+// C'est un middleware bien connu et largement utilisé pour traiter les fichiers multipart/form-data, qui est principalement utilisé pour le téléchargement de fichiers.
 // Définir un dictionnaire pour mapper les types MIME aux extensions de fichiers
+//npm i multer
 const MIME_TYPES = {
     'image/jpg': 'jpg',
     'image/jpeg': 'jpg',
