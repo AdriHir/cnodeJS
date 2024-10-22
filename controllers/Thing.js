@@ -1,45 +1,101 @@
-const Thing = require('../models/Thing');
+const Thing = require('../models/thing');
 
-// Contrôleur pour créer un nouvel objet "Thing"
+// Création d'un nouvel objet "Thing"
 exports.createThing = (req, res, next) => {
-    delete req.body._id; // Supprimer le champ _id pour éviter les conflits avec MongoDB, car _id est généré automatiquement
     const thing = new Thing({
-        // Créer un nouvel objet Thing avec les données de la requête
-        ...req.body
+        title: req.body.title,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+        price: req.body.price,
+        userId: req.body.userId
     });
-    // Sauvegarder l'objet dans la base de données
-    thing.save()
-        .then(() => res.status(201).json({message: 'Objet bien enregistré'})) // Retourner un message de succès
-        .catch(error => res.status(400).json({error})); // Gérer les erreurs de sauvegarde
-}
+    // Enregistrer l'objet dans la base de données
+    thing.save().then(
+        () => {
+            res.status(201).json({
+                message: 'Post saved successfully!'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
+};
 
-// Contrôleur pour obtenir tous les objets "Thing"
-exports.getThings = (req, res, next) => {
-    Thing.find() // Chercher tous les objets dans la base de données
-        .then(things => res.status(200).json(things)) // Retourner tous les objets trouvés
-        .catch(error => res.status(400).json({error})); // Gérer les erreurs de recherche
-}
-
-// Contrôleur pour obtenir un objet "Thing" par son ID
-exports.getThingById = (req, res, next) => {
-    Thing.findOne({_id: req.params.id}) // Chercher l'objet avec l'ID spécifié dans la requête
-        .then(thing => res.status(200).json(thing)) // Retourner l'objet trouvé
-        .catch(error => res.status(404).json({error})); // Gérer les erreurs de recherche
-}
-
-// Contrôleur pour mettre à jour un objet "Thing"
-exports.updateThing = (req, res, next) => {
-    Thing.updateOne({_id: req.params.id}, {
-        ...req.body,
+// Récupération d'un seul objet "Thing" par son identifiant
+exports.getOneThing = (req, res, next) => {
+    Thing.findOne({
         _id: req.params.id
-    }) // Mettre à jour l'objet avec les nouvelles données et conserver l'ID
-        .then(() => res.status(200).json({message: 'Objet modifié !'})) // Retourner un message de succès
-        .catch(error => res.status(400).json({error})); // Gérer les erreurs de mise à jour
-}
+    }).then(
+        (thing) => {
+            res.status(200).json(thing);
+        }
+    ).catch(
+        (error) => {
+            res.status(404).json({
+                error: error
+            });
+        }
+    );
+};
 
-// Contrôleur pour supprimer un objet "Thing"
+// Modification d'un objet existant "Thing"
+exports.modifyThing = (req, res, next) => {
+    const thing = new Thing({
+        _id: req.params.id,
+        title: req.body.title,
+        description: req.body.description,
+        imageUrl: req.body.imageUrl,
+        price: req.body.price,
+        userId: req.body.userId
+    });
+    // Mise à jour de l'objet dans la base de données
+    Thing.updateOne({_id: req.params.id}, thing).then(
+        () => {
+            res.status(201).json({
+                message: 'Thing updated successfully!'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
+};
+
+// Suppression d'un objet "Thing" par son identifiant
 exports.deleteThing = (req, res, next) => {
-    Thing.deleteOne({_id: req.params.id}) // Supprimer l'objet avec l'ID spécifié dans la requête
-        .then(() => res.status(200).json({message: 'Objet supprimé !'})) // Retourner un message de succès
-        .catch(error => res.status(400).json({error})); // Gérer les erreurs de suppression
-}
+    Thing.deleteOne({_id: req.params.id}).then(
+        () => {
+            res.status(200).json({
+                message: 'Deleted!'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
+};
+
+// Récupération de tous les objets "Thing"
+exports.getAllStuff = (req, res, next) => {
+    Thing.find().then(
+        (things) => {
+            res.status(200).json(things);
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
+};
