@@ -86,7 +86,7 @@ exports.deleteThing = (req, res, next) => {
 };
 
 // Récupération de tous les objets "Thing"
-exports.getAllStuff = (req, res, next) => {
+exports.getAllThing = (req, res, next) => {
     Thing.find().then(
         (things) => {
             res.status(200).json(things);

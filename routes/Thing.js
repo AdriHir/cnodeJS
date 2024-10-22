@@ -1,15 +1,20 @@
 const express = require('express');
-const stuffController = require("../controllers/Thing");
+const thingController = require("../controllers/Thing");
 const router = express.Router();
+const auth = require("../middleware/auth");
 
-router.post('/', stuffController.createThing);
+router.post('/', auth, thingController.createThing);
+
 // Endpoint pour obtenir un objet par son ID
-router.get('/:id', stuffController.getThingById);
+router.get('/:id',auth, thingController.getOneThing);
+
 // Endpoint pour obtenir tous les objets
-router.get('/', stuffController.getThings);
+router.get('/',auth, thingController.getAllThing);
+
 // Endpoint pour modifier un objet par son ID
-router.put(':id', stuffController.updateThing);
+router.put(':id',auth, thingController.modifyThing);
+
 // Endpoint pour supprimer un objet par son ID
-router.delete(':id', stuffController.deleteThing);
+router.delete(':id',auth, thingController.deleteThing);
 
 module.exports = router;
