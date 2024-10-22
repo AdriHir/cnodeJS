@@ -1,10 +1,10 @@
 // Importation des modules nécessaires
 const express = require('express');
 const bodyParser = require('body-parser');
-const Thing = require('./models/Thing'); // Importation du modèle Mongoose
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const stuffroute = require('./routes/Thing.js');
+const userRoute = require('./routes/User.js');
 // Chargement des variables d'environnement depuis le fichier .env
 dotenv.config();
 
@@ -36,6 +36,7 @@ app.use(bodyParser.json());
 
 //importe le routeur et utilise la route générale api/stuff
 app.use('/api/stuff', stuffroute);
+app.use('api/auth', userRoute);
 
 // Exporter l'application pour l'utiliser dans le fichier principal
 module.exports = app;

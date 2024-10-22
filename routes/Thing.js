@@ -1,5 +1,4 @@
 const express = require('express');
-const Thing = require("../models/Thing");
 const stuffController = require("../controllers/Thing");
 const router = express.Router();
 
