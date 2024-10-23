@@ -1,5 +1,6 @@
 // Importation des modules nécessaires
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -37,6 +38,6 @@ app.use(bodyParser.json());
 //importe le routeur et utilise la route générale api/stuff
 app.use('/api/stuff', thingRoute);
 app.use('/api/auth', userRoute);
-
+app.use('/images', express.static(path.join(__dirname, 'images')));
 // Exporter l'application pour l'utiliser dans le fichier principal
 module.exports = app;

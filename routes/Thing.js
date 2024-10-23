@@ -13,9 +13,9 @@ router.get('/:id',auth, thingController.getOneThing);
 router.get('/',auth, thingController.getAllThing);
 
 // Endpoint pour modifier un objet par son ID
-router.put(':id',auth, multer, thingController.modifyThing);
+router.put('/:id',auth, multer, thingController.modifyThing);
 
 // Endpoint pour supprimer un objet par son ID
-router.delete(':id',auth, thingController.deleteThing);
+router.delete('/:id',auth, thingController.deleteThing);
 
 module.exports = router;

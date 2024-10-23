@@ -1,4 +1,6 @@
 const Thing = require('../models/thing');
+const fs = require("node:fs");
+
 
 // Création d'un nouvel objet "Thing"
 exports.createThing = (req, res, next) => {
@@ -12,8 +14,12 @@ exports.createThing = (req, res, next) => {
     });
 
     thing.save()
-        .then(() => { res.status(201).json({message: 'Objet enregistré !'})})
-        .catch(error => { res.status(400).json( { error })})
+        .then(() => {
+            res.status(201).json({message: 'Objet enregistré !'})
+        })
+        .catch(error => {
+            res.status(400).json({error})
+        })
 };
 
 // Récupération d'un seul objet "Thing" par son identifiant
@@ -35,45 +41,45 @@ exports.getOneThing = (req, res, next) => {
 
 // Modification d'un objet existant "Thing"
 exports.modifyThing = (req, res, next) => {
-    const thing = new Thing({
-        _id: req.params.id,
-        title: req.body.title,
-        description: req.body.description,
-        imageUrl: req.body.imageUrl,
-        price: req.body.price,
-        userId: req.body.userId
-    });
-    // Mise à jour de l'objet dans la base de données
-    Thing.updateOne({_id: req.params.id}, thing).then(
-        () => {
-            res.status(201).json({
-                message: 'Thing updated successfully!'
-            });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
+    const thingObject = req.file ? {
+        ...JSON.parse(req.body.thing),
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    } : { ...req.body };
+
+    delete thingObject._userId;
+    Thing.findOne({_id: req.params.id})
+        .then((thing) => {
+            if (thing.userId != req.auth.userId) {
+                res.status(401).json({ message : 'Not authorized'});
+            } else {
+                Thing.updateOne({ _id: req.params.id}, { ...thingObject, _id: req.params.id})
+                    .then(() => res.status(200).json({message : 'Objet modifié!'}))
+                    .catch(error => res.status(401).json({ error }));
+            }
+        })
+        .catch((error) => {
+            res.status(400).json({ error });
+        });
 };
 
 // Suppression d'un objet "Thing" par son identifiant
 exports.deleteThing = (req, res, next) => {
-    Thing.deleteOne({_id: req.params.id}).then(
-        () => {
-            res.status(200).json({
-                message: 'Deleted!'
-            });
-        }
-    ).catch(
-        (error) => {
-            res.status(400).json({
-                error: error
-            });
-        }
-    );
+    Thing.findOne({ _id: req.params.id})
+        .then(thing => {
+            if (thing.userId != req.auth.userId) {
+                res.status(401).json({message: 'Not authorized'});
+            } else {
+                const filename = thing.imageUrl.split('/images/')[1];
+                fs.unlink(`images/${filename}`, () => {
+                    Thing.deleteOne({_id: req.params.id})
+                        .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
+                        .catch(error => res.status(401).json({ error }));
+                });
+            }
+        })
+        .catch( error => {
+            res.status(500).json({ error });
+        });
 };
 
 // Récupération de tous les objets "Thing"
