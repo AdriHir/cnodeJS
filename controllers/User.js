@@ -6,19 +6,18 @@ dotenv.config();
 const macle = process.env.MACLE;
 
 
-// Middleware pour l'inscription d'un utilisateur
 exports.signup = (req, res, next) => {
-    hashbcrypt.hash(req.body.password, 10).then(hash => {
-        const user = new User({
-            email: req.body.email,
-            password: hash
-        });
-        // Sauvegarde de l'utilisateur dans la base de données
-        user.save()
-            .then(() => res.status(201).json({ message: 'utilisateur créé' }))
-            .catch((err) => { res.status(400).json({ error: err }) });
-    })
-        .catch((err) => { res.status(500).json({ error: err }) });
+    hashbcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            const user = new User({
+                email: req.body.email,
+                password: hash
+            });
+            user.save()
+                .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+                .catch(error => res.status(400).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
 };
 
 
@@ -43,7 +42,7 @@ exports.login = (req, res, next) => {
                         userId: user._id,
                         token: jwt.sign(
                             { userId: user._id },
-                            `${macle.MACLE}`,
+                            macle,
                             { expiresIn: '24h' }
                         )
                     });
