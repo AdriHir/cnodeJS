@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const thingRoute = require('./routes/Thing.js');
 const userRoute = require('./routes/User.js');
+
 // Chargement des variables d'environnement depuis le fichier .env
 dotenv.config();
 
@@ -19,25 +20,27 @@ mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(err => console.error('La onnexion à MongoDB échouée !', err));
+    .then(() => console.log('Connexion à MongoDB réussie !')) // Si la connexion est réussie
+    .catch(err => console.error('La connexion à MongoDB a échoué !', err)); // Si la connexion échoue
 
 const app = express();
 
 // Middleware pour gérer les CORS (Cross-Origin Resource Sharing)
+// Ce middleware permet de définir les en-têtes de réponse pour autoriser les requêtes venant de différents domaines
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    next();
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Autorise toutes les origines
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // Autorise certains en-têtes
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // Autorise certaines méthodes HTTP
+    next(); // Passe à la middleware suivante
 });
 
 // Middleware pour parser les requêtes en JSON
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // Convertit les requêtes JSON en objets JavaScript utilisables
 
-//importe le routeur et utilise la route générale api/stuff
-app.use('/api/stuff', thingRoute);
-app.use('/api/auth', userRoute);
-app.use('/images', express.static(path.join(__dirname, 'images')));
+// Importer les routeurs et utiliser les routes définies pour les objets et les utilisateurs
+app.use('/api/stuff', thingRoute); // Routes pour les objets "Thing"
+app.use('/api/auth', userRoute); // Routes pour l'authentification des utilisateurs
+app.use('/images', express.static(path.join(__dirname, 'images'))); // Servir les fichiers images statiques depuis le dossier 'images'
+
 // Exporter l'application pour l'utiliser dans le fichier principal
 module.exports = app;
